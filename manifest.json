@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+
+  "name": "page bookmark",
+  "description": "bookmark for docs reader",
+  "version": "1.0.0",
+
+  "browser_action": {
+    "default_icon": "icon.jpg",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "<all_urls>"
+  ]
+}
