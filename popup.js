@@ -2,11 +2,21 @@ const logging = false;
 let globalItems = JSON.parse(getItem("sites"));
 if (globalItems === null) globalItems = [];
 
+/*chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+  console.log(tabId);
+  const path = data.url
+  let splitedPath = path.split("/")
+  const host = splitedPath[2];
+  let current_page = data.title;
+})*/
+
 function htmlTmeplate({index, host, current_page, favIconUrl}) {
   let favicon;
   log(index);
   if(favIconUrl){
     favicon = `<img src="${favIconUrl}" width="50px"/>`
+  } else {
+    favicon = ""
   }
   return html = `
     <li class="item" id="item_${index}">
@@ -14,14 +24,12 @@ function htmlTmeplate({index, host, current_page, favIconUrl}) {
       ${favicon}
       <button class="delete" id="deleteButton_${index}">delete</button>
       <button class="updateAuto" id="updateButton_${index}">auto update</button><br>
-      <a class="prev" id="prevButton_${index}">이전:${globalItems[index].prev_current_page}</a><br>
-      현재:  <a id="a_${index}"> ${current_page}</a> <br>
+      <a class="prev" href="#" id="prevButton_${index}">이전:${globalItems[index].prev_current_page}</a><br>
+      현재:  <a id="a_${index}" href="#"> ${current_page}</a> <br>
 
     </li>
   `
 }
-
-console.log(globalItems)
 function getCurrentUrl(fn, args) {
   let queryInfo = {
     active: true,
@@ -120,16 +128,31 @@ function updateTab(url) {
    });
 }
 
+function writePageInfo(data) {
+  const path = data.url.trim()
+  const splitedPath = path.split("/")
+  const host = splitedPath[2];
+  const current_page = data.title;
+  favicon = data.favIconUrl ? `<img src="${data.favIconUrl}" width="35px"/> <br>` : "";
+  document.getElementById('page_info').innerHTML = `
+    <h2>${host}</h2>
+    ${favicon}
+    current_page: ${current_page} <br>
+    url: ${path}
+  `
+}
+
 window.onload = function() {
+  getCurrentUrl(writePageInfo); // 현재 페이지 정보를 표시하는 코드
   document.getElementById('add').onclick = () => getCurrentUrl(onAddClick);
   let list = document.getElementById('list');
   globalItems.map((item, index, arr) => {
-    list.innerHTML += htmlTmeplate({
+    list.innerHTML = htmlTmeplate({
       index:index,
       host:item.host,
       current_page:item.current_page,
       favIconUrl: item.favIconUrl
-    })
+    }) + list.innerHTML
 
   });
   globalItems.map((item, index) => {
