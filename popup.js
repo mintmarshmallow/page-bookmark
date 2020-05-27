@@ -22,11 +22,14 @@ function htmlTmeplate({index, host, current_page, favIconUrl}) {
     <li class="item" id="item_${index}">
       <h2>${host}</h2>
       ${favicon}
-      <button class="delete" id="deleteButton_${index}">delete</button>
-      <button class="updateAuto" id="updateButton_${index}">auto update</button><br>
-      <a class="prev" href="#" id="prevButton_${index}">이전:${globalItems[index].prev_current_page}</a><br>
-      현재:  <a id="a_${index}" href="#"> ${current_page}</a> <br>
-
+      <div class="a_container">
+        <a class="prev" href="#" id="prevButton_${index}">이전:::${globalItems[index].prev_current_page}</a><br>
+          <a class="current" id="a_${index}" href="#">현재::: ${current_page}</a>
+      </div>
+      <div class="button_container">
+        <a class="delete buttons" id="deleteButton_${index}" href="#">delete</a>
+        <a class="updateAuto buttons" id="updateButton_${index}" href="#">auto update</a>
+      </div>
     </li>
   `
 }
@@ -129,7 +132,11 @@ function updateTab(url) {
 }
 
 function writePageInfo(data) {
-  const path = data.url.trim()
+  let path = data.url.trim()
+  if (path.length > 110) {
+    path = path.slice(0 ,109) +"...............";
+
+  }
   const splitedPath = path.split("/")
   const host = splitedPath[2];
   const current_page = data.title;
@@ -137,8 +144,8 @@ function writePageInfo(data) {
   document.getElementById('page_info').innerHTML = `
     <h2>${host}</h2>
     ${favicon}
-    current_page: ${current_page} <br>
-    url: ${path}
+     <span class="page_info_txt">current_page: ${current_page} </span>
+    <span class="page_info_txt">url: ${path}</span>
   `
 }
 
