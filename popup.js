@@ -1,4 +1,4 @@
-const logging = false;
+const logging = true;
 let globalItems = JSON.parse(getItem("sites"));
 if (globalItems === null) globalItems = [];
 
@@ -10,7 +10,8 @@ if (globalItems === null) globalItems = [];
   let current_page = data.title;
 })*/
 
-function htmlTmeplate({index, host, current_page, favIconUrl}) {
+function htmlTmeplate({index, host, current_page, favIconUrl, caption}) {
+  log(caption)
   let favicon;
   log(index);
   if(favIconUrl){
@@ -20,7 +21,7 @@ function htmlTmeplate({index, host, current_page, favIconUrl}) {
   }
   return html = `
     <li class="item" id="item_${index}">
-      <h2>${host}</h2>
+      <h2>${host}${caption}</h2>
       ${favicon}
       <div class="a_container">
         <a class="prev" href="#" id="prevButton_${index}">이전:::${globalItems[index].prev_current_page}</a><br>
@@ -71,7 +72,7 @@ function onUpdateClick(data, index) {
     return;
   }
   if(host !== globalItem.host){
-    if(confirm('서로 다른 사이트입니다. 추가할까요?')){
+    if(confirm('서로 다른 사이트입니다. 새로 추가할까요?')){
       onAddClick(data);
       alert('추가 되었습니다.')
       return;
@@ -91,7 +92,21 @@ function onUpdateClick(data, index) {
     setItem("sites", JSON.stringify(globalItems));
     log(globalItems)
     window.location.reload(false);
-  }
+  } else {
+    [
+      globalItems[index].prev_current_page,
+      globalItems[index].current_page
+    ] = [globalItems[index].current_page,current_page];
+    [
+      globalItems[index].prev_full_path,
+      globalItems[index].full_path
+    ] = [globalItems[index].full_path,path];
+    setItem("sites", JSON.stringify(globalItems));
+    log(globalItems)
+    window.location.reload(false);
+  } // 나중에 파일네임을 제외한 경로(path_except)가 저번과 다를때는 다르게 로직 분기하게 코드짜야함
+  //경로 변경 패턴을 두세번째까지 분석해서 다음부턴 path_except다를때 경고 메시지 나오지 않게 조절
+  //path_except값도 분석을 통해 뒤에서 몇번째 slash 자리를 기준으로 결정할것인지 구형해야함
 
 
 }
@@ -101,6 +116,31 @@ function onAddClick(data){
     let splitedPath = path.split("/")
     const host = splitedPath[2];
     let current_page = data.title;
+    let caption = "";
+    let isSamePath = false;
+    let isSameHost = false;
+    let sameHostCount = 0;
+    for(let i = 0; globalItems.length > i; i++) {
+      if(globalItems[i].full_path === path) {
+        isSamePath = true;
+        isSameHost = true;
+        sameHostCount++;
+        continue;
+      }
+      if(globalItems[i].host === host) {
+        isSameHost = true;
+        sameHostCount++;
+      }
+    }
+    if(isSamePath) {
+      if(!(confirm("같은 페이지가 이미 등록되어있습니다. 그래도 등록할까요?"))){
+        return;
+      }
+    }
+    if(isSameHost) {
+      caption = `(${sameHostCount})`
+    }
+    log(caption)
     globalItems.push({
       host:host,
       current_page:current_page,
@@ -108,6 +148,7 @@ function onAddClick(data){
       favIconUrl: data.favIconUrl,
       prev_full_path:path,
       prev_current_page: current_page,
+      caption: caption,
     })
     let json = JSON.stringify(globalItems)
     setItem("sites", json)
@@ -132,7 +173,7 @@ function updateTab(url) {
 }
 
 function writePageInfo(data) {
-  let path = data.url.trim()
+  let path = data.url
   if (path.length > 110) {
     path = path.slice(0 ,109) +"...............";
 
@@ -144,8 +185,11 @@ function writePageInfo(data) {
   document.getElementById('page_info').innerHTML = `
     <h2>${host}</h2>
     ${favicon}
-     <span class="page_info_txt">current_page: ${current_page} </span>
-    <span class="page_info_txt">url: ${path}</span>
+    <div class="page_info_txt_container">
+      <span class="page_info_txt">current_page: ${current_page} </span>
+      <span class="page_info_txt">url: ${path}</span>
+    </div>
+
   `
 }
 
@@ -158,9 +202,9 @@ window.onload = function() {
       index:index,
       host:item.host,
       current_page:item.current_page,
-      favIconUrl: item.favIconUrl
+      favIconUrl: item.favIconUrl,
+      caption: item.caption,
     }) + list.innerHTML
-
   });
   globalItems.map((item, index) => {
     document.getElementById(`deleteButton_${index}`).onclick = function() {

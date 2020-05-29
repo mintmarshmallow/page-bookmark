@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;500&display=swap');
 body {
   width : 380px;
-  min-height:250px;
+  min-height:390px;
   font-family: 'Raleway', sans-serif;
   font-weight: 400;
   background: #D6EAF8;
@@ -67,7 +67,7 @@ a {
 h1 {
   font-weight: 200;
   font-size: 50px;
-  margin: 130px 10px 70px 10px;
+  margin: 90px 10px 70px 10px;
 }
 h2 {
   font-weight: 400;
@@ -87,6 +87,9 @@ ul {
   box-shadow:  0 0 5px #BBBBBB ;
   list-style: none;
 }
+.page_info_txt_container {
+  display: inline;
+}
 
 .page_info_txt {
   padding: 5px;
@@ -95,7 +98,7 @@ ul {
   box-shadow:  0 0 5px #BBBBBB ;
   font-size: 14px;
   font-weight: 400;
-  display: block;
+  display: inline-block;
 }
 
 a.prev {
