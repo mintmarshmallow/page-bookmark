@@ -1,4 +1,4 @@
-const logging = true;
+const logging = false;
 let globalItems = JSON.parse(getItem("sites"));
 if (globalItems === null) globalItems = [];
 
@@ -77,6 +77,7 @@ function onUpdateClick(data, index) {
       alert('추가 되었습니다.')
       return;
     }
+    return;
   }
   log(path_except);
   log(globalItem_path_except)
