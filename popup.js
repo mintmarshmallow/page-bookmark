@@ -24,8 +24,8 @@ function htmlTmeplate({index, host, current_page, favIconUrl, caption}) {
       <h2>${host}${caption}</h2>
       ${favicon}
       <div class="a_container">
-        <a class="prev" href="#" id="prevButton_${index}">이전:::${globalItems[index].prev_current_page}</a><br>
-          <a class="current" id="a_${index}" href="#">현재::: ${current_page}</a>
+        <a class="current" id="a_${index}" href="#"><strong>current</strong>::: ${current_page}</a><br>
+        <a class="prev" href="#" id="prevButton_${index}"><strong>previous</strong>:::${globalItems[index].prev_current_page}</a>
       </div>
       <div class="button_container">
         <a class="delete buttons" id="deleteButton_${index}" href="#">delete</a>
@@ -68,13 +68,19 @@ function onUpdateClick(data, index) {
   let path_except = deleteOneInArrAndConnectStr(splitedPath, -1);
   log('yeah')
   if(path === globalItem.full_path) {
-    alert('저번과 같은 페이지 입니다.');
+    alert('저번과 같은 페이지 입니다.\nThis is the same page as last the time ');
     return;
   }
   if(host !== globalItem.host){
-    if(confirm('서로 다른 사이트입니다. 새로 추가할까요?')){
+    if(confirm(
+      `서로 다른 사이트입니다. 새로 추가할까요?
+      The hostname is different with the previous page
+      (Site different from the previous one)
+      Add this as a new page?`
+      )
+    ){
       onAddClick(data);
-      alert('추가 되었습니다.')
+      alert('추가 되었습니다.\n Successfully added')
       return;
     }
     return;
@@ -134,7 +140,7 @@ function onAddClick(data){
       }
     }
     if(isSamePath) {
-      if(!(confirm("같은 페이지가 이미 등록되어있습니다. 그래도 등록할까요?"))){
+      if(!(confirm(`같은 페이지가 이미 등록되어있습니다. 그래도 등록할까요?\n You have registered this page before.\nNevertheless register this page?`))){
         return;
       }
     }
