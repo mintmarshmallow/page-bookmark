@@ -1,6 +1,20 @@
 const logging = false;
 let globalItems = JSON.parse(getItem("sites"));
+let haveToScroll = JSON.parse(getItem("haveToScroll"));
 if (globalItems === null) globalItems = [];
+if(haveToScroll === null) haveToScroll = [0, ""];//[scroll, url]
+console.log(haveToScroll)
+chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab	){
+  console.log(changeInfo);
+  if(changeInfo.status == "complete"){
+    chrome.tabs.executeScript({code:`window.scrollTo(0, ${haveToScroll[0]})`}, function(result){
+      haveToScroll[0] = 0;
+      haveToScroll[1] = "";
+    });
+  }
+
+});
+
 
 /*chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   console.log(tabId);
@@ -10,7 +24,7 @@ if (globalItems === null) globalItems = [];
   let current_page = data.title;
 })*/
 
-function htmlTmeplate({index, host, current_page, favIconUrl, caption}) {
+function htmlTmeplate({index, host, current_page, favIconUrl, caption, scrollTop}) {
   log(caption)
   let favicon;
   log(index);
@@ -39,13 +53,20 @@ function getCurrentUrl(fn, args) {
     active: true,
     currentWindow: true,
   };
+  chrome.tabs.executeScript({
+    code: "document.querySelector('html').scrollTop"
+  }, function(result) {
 
-  chrome.tabs.query(queryInfo, function(tabs) {
-    let tab = tabs[0];
-    log(tab);
-    if(!args) fn(tab);
-    if(args) fn(tab, args[0])
-  })
+    chrome.tabs.query(queryInfo, function(tabs) {
+      let tab = tabs[0];
+      tab = {...tab, scrollTop: (result ? result[0]:0)};
+      log(tab);
+      if(!args) fn(tab);
+      if(args) fn(tab, args[0])
+    });
+
+  });
+
 }
 
 function deleteOneInArrAndConnectStr(arr, i){
@@ -67,10 +88,10 @@ function onUpdateClick(data, index) {
   let current_page = data.title;
   let path_except = deleteOneInArrAndConnectStr(splitedPath, -1);
   log('yeah')
-  if(path === globalItem.full_path) {
+  /*if(path === globalItem.full_path) {
     alert('저번과 같은 페이지 입니다.\nThis is the same page as last the time ');
     return;
-  }
+  }*/
   if(host !== globalItem.host){
     if(confirm(
       `서로 다른 사이트입니다. 새로 추가할까요?
@@ -96,6 +117,7 @@ function onUpdateClick(data, index) {
       globalItems[index].prev_full_path,
       globalItems[index].full_path
     ] = [globalItems[index].full_path,path];
+    globalItems[index].scrollTop = data.scrollTop,
     setItem("sites", JSON.stringify(globalItems));
     log(globalItems)
     window.location.reload(false);
@@ -108,6 +130,7 @@ function onUpdateClick(data, index) {
       globalItems[index].prev_full_path,
       globalItems[index].full_path
     ] = [globalItems[index].full_path,path];
+    globalItems[index].scrollTop = data.scrollTop,
     setItem("sites", JSON.stringify(globalItems));
     log(globalItems)
     window.location.reload(false);
@@ -119,8 +142,8 @@ function onUpdateClick(data, index) {
 }
 
 function onAddClick(data){
-    const path = data.url
-    let splitedPath = path.split("/")
+    const path = data.url;
+    let splitedPath = path.split("/");
     const host = splitedPath[2];
     let current_page = data.title;
     let caption = "";
@@ -156,7 +179,8 @@ function onAddClick(data){
       prev_full_path:path,
       prev_current_page: current_page,
       caption: caption,
-    })
+      scrollTop:data.scrollTop,
+    });
     let json = JSON.stringify(globalItems)
     setItem("sites", json)
     let index = globalItems.length-1;
@@ -173,14 +197,19 @@ function addClickListener(index) {
   window.location.reload(false);
 }
 
-function updateTab(url) {
+function updateTab(url, scrollTop) {
+  setItem("haveToScroll", JSON.stringify([scrollTop, url]));
   chrome.tabs.update({
      url: url
+   }, function(result){
+     window.location.reload(false);
    });
+
+
 }
 
 function writePageInfo(data) {
-  let path = data.url
+  let path = data.url;
   if (path.length > 110) {
     path = path.slice(0 ,109) +"...............";
 
@@ -201,6 +230,7 @@ function writePageInfo(data) {
 }
 
 window.onload = function() {
+
   getCurrentUrl(writePageInfo); // 현재 페이지 정보를 표시하는 코드
   document.getElementById('add').onclick = () => getCurrentUrl(onAddClick);
   let list = document.getElementById('list');
@@ -211,14 +241,16 @@ window.onload = function() {
       current_page:item.current_page,
       favIconUrl: item.favIconUrl,
       caption: item.caption,
+      scrollTop: item.scrollTop ? item.scrollTop : item.scrollTop=0,
     }) + list.innerHTML
   });
   globalItems.map((item, index) => {
+    console.log(item.scrollTop)
     document.getElementById(`deleteButton_${index}`).onclick = function() {
       addClickListener(index)
     };
     document.getElementById(`a_${index}`).onclick = function() {
-      updateTab(item.full_path);
+      updateTab(item.full_path, item.scrollTop);
     };
     document.getElementById(`updateButton_${index}`).onclick = function() {
       getCurrentUrl(onUpdateClick, [index])
