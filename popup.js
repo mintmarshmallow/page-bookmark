@@ -285,11 +285,13 @@ function getItem(key) {
   //log("Returning value: " + value);
   return value;
 }
+
 function clearStrg() {
   log('about to clear local storage');
   window.localStorage.clear(); // <-- Local storage!
   log('cleared');
 }
+
 function log(txt) {
   if(logging) {
     console.log(txt);
