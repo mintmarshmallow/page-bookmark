@@ -2,6 +2,9 @@
     "extName": {
         "message": "Page Bookmark"
     },
+    "description": {
+        "message":"문서 읽기를 위한 즐겨찾기"
+    },
     "samePageAlert": {
         "message": "This is the same page as last the time."
     },
@@ -31,6 +34,9 @@
     },
     "url": {
         "message": "url"
+    },
+    "addThisPage": {
+        "message": "Add this page"
     }
     
 }

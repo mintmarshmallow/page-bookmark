@@ -2,6 +2,9 @@
     "extName": {
         "message": "페이지 북마크"
     },
+    "description": {
+        "message":"bookmark for docs reader"
+    },
     "samePageAlert": {
         "message": "저번과 같은 페이지 입니다."
     },
@@ -24,13 +27,16 @@
         "message": "삭제"
     },
     "updateButton": {
-        "message": "기록하기"
+        "message": "수정"
     },
     "currentPage": {
         "message": "지금 페이지"
     },
     "url": {
         "message": "경로"
+    },
+    "addThisPage": {
+        "message": "이 페이지를 등록"
     }
     
 }

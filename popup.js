@@ -227,6 +227,7 @@ function writePageInfo(data) {
 window.onload = function() {
 
   getCurrentUrl(writePageInfo); // 현재 페이지 정보를 표시하는 코드
+  document.getElementById('add').innerHTML = chrome.i18n.getMessage("addThisPage");
   document.getElementById('add').onclick = () => getCurrentUrl(onAddClick);
   let list = document.getElementById('list');
   globalItems.map((item, index, arr) => {
