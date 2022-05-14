@@ -1,0 +1,36 @@
+{
+    "extName": {
+        "message": "Page Bookmark"
+    },
+    "samePageAlert": {
+        "message": "This is the same page as last the time."
+    },
+    "differentPageAlert": {
+        "message": "The hostname is different with the previous page \n(Site different from the previous one)\nAdd this as a new page?"
+    },
+    "successfulAdd": {
+        "message": "Successfully added"
+    },
+    "samePageAlert2": {
+        "message": "You have registered this page before.\nNevertheless register this page?"
+    },
+    "current": {
+        "message": "current"
+    },
+    "previous": {
+        "message": "previous"
+    },
+    "deleteButton": {
+        "message": "delete"
+    },
+    "updateButton": {
+        "message": "update"
+    },
+    "currentPage": {
+        "message": "current_page"
+    },
+    "url": {
+        "message": "url"
+    }
+    
+}

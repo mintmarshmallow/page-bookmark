@@ -38,12 +38,12 @@ function htmlTmeplate({index, host, current_page, favIconUrl, caption, scrollTop
       <h2>${host}${caption}</h2>
       ${favicon}
       <div class="a_container">
-        <a class="current" id="a_${index}" href="#"><strong>current</strong>::: ${current_page}</a><br>
-        <a class="prev" href="#" id="prevButton_${index}"><strong>previous</strong>:::${globalItems[index].prev_current_page}</a>
+        <a class="current" id="a_${index}" href="#"><strong>${chrome.i18n.getMessage("current")}</strong>::: ${current_page}</a><br>
+        <a class="prev" href="#" id="prevButton_${index}"><strong>${chrome.i18n.getMessage("previous")}</strong>:::${globalItems[index].prev_current_page}</a>
       </div>
       <div class="button_container">
-        <a class="delete buttons" id="deleteButton_${index}" href="#">delete</a>
-        <a class="updateAuto buttons" id="updateButton_${index}" href="#">auto update</a>
+        <a class="delete buttons" id="deleteButton_${index}" href="#">${chrome.i18n.getMessage("deleteButton")}</a>
+        <a class="updateAuto buttons" id="updateButton_${index}" href="#">${chrome.i18n.getMessage("updateButton")}</a>
       </div>
     </li>
   `
@@ -89,19 +89,14 @@ function onUpdateClick(data, index) {
   let path_except = deleteOneInArrAndConnectStr(splitedPath, -1);
   log('yeah')
   /*if(path === globalItem.full_path) {
-    alert('저번과 같은 페이지 입니다.\nThis is the same page as last the time ');
+    alert(chrome.i18n.getMessage("samePageAlert"));
     return;
   }*/
   if(host !== globalItem.host){
-    if(confirm(
-      `서로 다른 사이트입니다. 새로 추가할까요?
-      The hostname is different with the previous page
-      (Site different from the previous one)
-      Add this as a new page?`
-      )
+    if(confirm(chrome.i18n.getMessage("differentPageAlert"))
     ){
       onAddClick(data);
-      alert('추가 되었습니다.\n Successfully added')
+      alert(chrome.i18n.getMessage("successfulAdd"));
       return;
     }
     return;
@@ -163,7 +158,7 @@ function onAddClick(data){
       }
     }
     if(isSamePath) {
-      if(!(confirm(`같은 페이지가 이미 등록되어있습니다. 그래도 등록할까요?\n You have registered this page before.\nNevertheless register this page?`))){
+      if(!(confirm(chrome.i18n.getMessage("samePageAlert2")))){
         return;
       }
     }
@@ -189,8 +184,8 @@ function onAddClick(data){
 }
 
 function addClickListener(index) {
-  console.log(index);
-  console.log(globalItems[index])//해당 인덱스에 요소가 있는지 확인해야할까??
+  log(index);
+  log(globalItems[index])//해당 인덱스에 요소가 있는지 확인해야할까??
   //if (idx > -1) console.log(globalItems.splice(idx, 1));
   globalItems.splice(index, 1)
   setItem("sites", JSON.stringify(globalItems))
@@ -222,8 +217,8 @@ function writePageInfo(data) {
     <h2>${host}</h2>
     ${favicon}
     <div class="page_info_txt_container">
-      <span class="page_info_txt">current_page: ${current_page} </span>
-      <span class="page_info_txt">url: ${path}</span>
+      <span class="page_info_txt">${chrome.i18n.getMessage("currentPage")}: ${current_page} </span>
+      <span class="page_info_txt">${chrome.i18n.getMessage("url")}: ${path}</span>
     </div>
 
   `

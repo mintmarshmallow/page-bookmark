@@ -1,0 +1,36 @@
+{
+    "extName": {
+        "message": "페이지 북마크"
+    },
+    "samePageAlert": {
+        "message": "저번과 같은 페이지 입니다."
+    },
+    "differentPageAlert": {
+        "message": "서로 다른 사이트입니다. 새로 추가할까요?"
+    },
+    "successfulAdd": {
+        "message": "추가 되었습니다."
+    },
+    "samePageAlert2": {
+        "message": "같은 페이지가 이미 등록되어있습니다. 그래도 등록할까요?"
+    },
+    "current": {
+        "message": "현재"
+    },
+    "previous": {
+        "message": "이전"
+    },
+    "deleteButton": {
+        "message": "삭제"
+    },
+    "updateButton": {
+        "message": "기록하기"
+    },
+    "currentPage": {
+        "message": "지금 페이지"
+    },
+    "url": {
+        "message": "경로"
+    }
+    
+}
