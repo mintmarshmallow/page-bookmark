@@ -1,13 +1,21 @@
+
+
 const logging = false;
 let globalItems = JSON.parse(getItem("sites"));
 let haveToScroll = JSON.parse(getItem("haveToScroll"));
 if (globalItems === null) globalItems = [];
 if(haveToScroll === null) haveToScroll = [0, ""];//[scroll, url]
-console.log(haveToScroll)
+log(haveToScroll)
 chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab	){
-  console.log(changeInfo);
+  log('tabId:'+tabId);
   if(changeInfo.status == "complete"){
-    chrome.tabs.executeScript({code:`window.scrollTo(0, ${haveToScroll[0]})`}, function(result){
+    log('haveToScroll')
+    log(haveToScroll)
+    let fn = function(scroll){
+      window.scrollTo(0, scroll);
+    }
+    chrome.scripting.executeScript({target: {tabId}, args: [haveToScroll[0]], function: fn})
+    .then(()=> {
       haveToScroll[0] = 0;
       haveToScroll[1] = "";
     });
@@ -53,7 +61,16 @@ function getCurrentUrl(fn, args) {
     active: true,
     currentWindow: true,
   };
-  chrome.tabs.executeScript({
+  chrome.tabs.query(queryInfo, function(tabs) {
+    chrome.scripting.executeScript({target: {tabId:tabs[0].id}, function: ()=> document.querySelector('html').scrollTop})
+    .then(function(result) {
+      let tab = tabs[0];
+      tab = {...tab, scrollTop: (result ? result[0].result:0)};
+      if(!args) fn(tab);
+      if(args) fn(tab, args[0]);
+    });
+  })
+  /**chrome.tabs.executeScript({
     code: "document.querySelector('html').scrollTop"
   }, function(result) {
 
@@ -65,7 +82,7 @@ function getCurrentUrl(fn, args) {
       if(args) fn(tab, args[0])
     });
 
-  });
+  });**/
 
 }
 
