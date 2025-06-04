@@ -3,7 +3,7 @@
         "message": "페이지 북마크"
     },
     "description": {
-        "message":"bookmark for docs reader"
+        "message":"온라인 문서, 웹툰 그리고 튜토리얼을 어디까지 읽었는지 기록하기 불편하신가요? '페이지 북마크'를 이용해보세요. 웹페이지 별로 어디까지 읽었는지 한 번의 클릭으로 기록하고, 스크롤 위치도 자동으로 됩니다!"
     },
     "samePageAlert": {
         "message": "저번과 같은 페이지 입니다."
